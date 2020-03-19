@@ -13,14 +13,14 @@ import br.com.model.editor.data.MysqlServer;
 import br.com.model.editor.data.PostgresServer;
 import br.com.model.editor.data.Server;
 import br.com.model.editor.data.SqliteServer;
-import br.com.model.editor.view.ConnectionDialogView;
+import br.com.model.editor.view.ConnectionDialogUnView;
 
-public class ConnectionDialogController extends ConnectionDialogView {
+public class ConnectionDialogUn extends ConnectionDialogUnView {
 
 	private Server server = null;
 	private List<String> databaseNames = null;
 
-	public ConnectionDialogController(Shell parent) {
+	public ConnectionDialogUn(Shell parent) {
 		super(parent);
 		initialize();
 	}

@@ -29,7 +29,7 @@ import br.com.model.editor.model.Table;
 import br.com.model.editor.tools.Util;
 import br.com.model.editor.view.ModifyTableDialogView;
 
-public class ModifyTableDialogController extends ModifyTableDialogView{
+public class ModifyTableDialog extends ModifyTableDialogView{
 
 	private static final List<Class<?>> TYPES = DataTypes.getAllTypes();
 
@@ -53,7 +53,7 @@ public class ModifyTableDialogController extends ModifyTableDialogView{
 	//private List<Column> newColumns = new ArrayList<>();
 	private Renames renames = null;
 
-	public ModifyTableDialogController(Shell parent, Server server, Table table, List<Table> allTables) {
+	public ModifyTableDialog(Shell parent, Server server, Table table, List<Table> allTables) {
 		super(parent);
 		result = false;
 		this.table = table.clone();
@@ -303,7 +303,7 @@ public class ModifyTableDialogController extends ModifyTableDialogView{
 		//Check remove
 		TableEditor editor9 = new TableEditor(tblModifier);
 		Button button = new Button(tblModifier, SWT.NONE);
-		button.setImage(SWTResourceManager.getImage(ModifyTableDialogController.class, "/icon/delete.png"));
+		button.setImage(SWTResourceManager.getImage(ModifyTableDialog.class, "/icon/delete.png"));
 		button.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {

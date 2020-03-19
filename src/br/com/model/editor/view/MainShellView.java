@@ -15,7 +15,7 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.wb.swt.SWTResourceManager;
 
-import br.com.model.editor.controller.ModelEditorController;
+import br.com.model.editor.controller.ModelEditor;
 import br.com.model.editor.tools.Util;
 
 public class MainShellView {
@@ -23,7 +23,7 @@ public class MainShellView {
 	protected Shell shell;
 	protected ToolBar toolBar;
 	protected ToolItem btnOpenDB;
-	protected ModelEditorController modelEditor;
+	protected ModelEditor modelEditor;
 	protected ToolItem btnNewDatabase;
 	protected ToolItem btnExport;
 	protected ToolItem btnSave;
@@ -123,7 +123,7 @@ public class MainShellView {
 		});
 		btnExport.setImage(SWTResourceManager.getImage(MainShellView.class, "/icon/export32.png"));
 		btnExport.setText("Export");
-		modelEditor = new ModelEditorController(shell, SWT.BORDER);
+		modelEditor = new ModelEditor(shell, SWT.BORDER);
 		modelEditor.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		modelEditor.setVisible(false);
 		Util.centralize(shell);
