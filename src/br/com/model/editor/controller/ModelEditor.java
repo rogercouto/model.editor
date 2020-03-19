@@ -34,7 +34,7 @@ import br.com.model.editor.model.TableModel;
 import br.com.model.editor.tools.IntCounter;
 import br.com.model.editor.view.ModelEditorCompView;
 
-public class ModelEditorController extends ModelEditorCompView {
+public class ModelEditor extends ModelEditorCompView {
 
 	private static final int START_POS = 25;
 	private static final int SPC_BETWEEN = 20;
@@ -55,23 +55,23 @@ public class ModelEditorController extends ModelEditorCompView {
 	//private Stack<List<TableModel>> undoStack = new Stack<>();
 
 
-	public ModelEditorController(Composite parent, int style) {
+	public ModelEditor(Composite parent, int style) {
 		super(parent, style);
 		initialize();
 	}
 
-	public ModelEditorController(Composite parent, int style, int canvasStyle) {
+	public ModelEditor(Composite parent, int style, int canvasStyle) {
 		super(parent, style, canvasStyle);
 		initialize();
 	}
 
-	public ModelEditorController(Composite parent, int style, Server server) {
+	public ModelEditor(Composite parent, int style, Server server) {
 		super(parent, style);
 		this.server = server;
 		initialize();
 	}
 
-	public ModelEditorController(Composite parent, int style, int canvasStyle, Server server) {
+	public ModelEditor(Composite parent, int style, int canvasStyle, Server server) {
 		super(parent, style, canvasStyle);
 		this.server = server;
 		initialize();
@@ -318,7 +318,7 @@ public class ModelEditorController extends ModelEditorCompView {
 	}
 
 	public static void setMaxWidth(int maxWidth) {
-		ModelEditorController.maxWidth = maxWidth;
+		ModelEditor.maxWidth = maxWidth;
 	}
 
 	public void calcPositions(){
@@ -383,7 +383,7 @@ public class ModelEditorController extends ModelEditorCompView {
 
 	private void editTable(Table table){
 		int index = getTableIndex(table.getName());
-		ModifyTableDialogController dialog = new ModifyTableDialogController(getShell(), server, table, getTables());
+		ModifyTableDialog dialog = new ModifyTableDialog(getShell(), server, table, getTables());
 		Object res = dialog.open();
 		if (res != null && res instanceof Table) {
 			renames.putAll(dialog.getRenames());
@@ -408,7 +408,7 @@ public class ModelEditorController extends ModelEditorCompView {
 
 	protected void dobtnCreatewidgetSelected(SelectionEvent e) {
 		Table table = new Table("");
-		ModifyTableDialogController dialog = new ModifyTableDialogController(getShell(), server, table, getTables());
+		ModifyTableDialog dialog = new ModifyTableDialog(getShell(), server, table, getTables());
 		Object res = dialog.open();
 		if (res != null && res instanceof Table) {
 			saveStep();

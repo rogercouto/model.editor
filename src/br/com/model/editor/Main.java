@@ -13,7 +13,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.FileDialog;
 
-import br.com.model.editor.controller.ConnectionDialogController;
+import br.com.model.editor.controller.ConnectionDialog;
 import br.com.model.editor.data.MigrateSQL;
 import br.com.model.editor.data.MysqlServer;
 import br.com.model.editor.data.PostgresServer;
@@ -35,10 +35,7 @@ public class Main extends MainShellView {
 	}
 
 	protected void dobtnOpenDBwidgetSelected(SelectionEvent e) {
-		ConnectionDialogController dialog = new ConnectionDialogController(shell);
-		Server server = (Server)dialog.open();
-		System.out.println(server.getClass());
-		System.out.println(server.getDbName());
+		Server server = ConnectionDialog.openDialog(shell);
 		//Server server = new MysqlServer("biblioteca", "root", "");
 		if (server != null) {
 			ReverseEng revEng = new ReverseEng(server);
