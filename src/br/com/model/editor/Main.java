@@ -100,7 +100,7 @@ public class Main extends MainShellView {
 	protected void dotltmSavewidgetSelected(SelectionEvent e) {
 		ModelData data = modelEditor.getModelData();
 		FileDialog dialog = new FileDialog(shell, SWT.SAVE);
-		dialog.setFilterExtensions(new String[]{".mef"});
+		dialog.setFilterExtensions(new String[]{"*.mef"});
 		String fileName = dialog.open();
 		if (fileName != null){
 			try {
@@ -116,7 +116,7 @@ public class Main extends MainShellView {
 
 	protected void dotltmOpenwidgetSelected(SelectionEvent e) {
 		FileDialog dialog = new FileDialog(shell, SWT.OPEN);
-		dialog.setFilterExtensions(new String[]{".mef"});
+		dialog.setFilterExtensions(new String[]{"*.mef"});
 		String fileName = dialog.open();
 		if (fileName != null){
 			File file = new File(fileName);

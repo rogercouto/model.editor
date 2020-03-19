@@ -10,13 +10,14 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Monitor;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.wb.swt.SWTResourceManager;
 
 import br.com.model.editor.controller.ModelEditor;
-import br.com.model.editor.tools.Util;
+import br.com.model.editor.tools.Screen;
 
 public class MainShellView {
 
@@ -51,6 +52,12 @@ public class MainShellView {
 	 */
 	public void open() {
 		Display display = Display.getDefault();
+		Monitor[] m = display.getMonitors();
+		if (m.length > 1){
+			Screen.centralize(shell, m[0]);
+		}else{
+			Screen.centralize(shell);
+		}
 		shell.open();
 		shell.layout();
 		while (!shell.isDisposed()) {
@@ -126,7 +133,6 @@ public class MainShellView {
 		modelEditor = new ModelEditor(shell, SWT.BORDER);
 		modelEditor.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		modelEditor.setVisible(false);
-		Util.centralize(shell);
 	}
 
 	protected void dobtnOpenDBwidgetSelected(SelectionEvent e) {

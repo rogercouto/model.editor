@@ -15,7 +15,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.wb.swt.SWTResourceManager;
 
-import br.com.model.editor.tools.Util;
+import br.com.model.editor.tools.Screen;
 
 public class ModifyTableDialogView extends Dialog {
 
@@ -43,7 +43,7 @@ public class ModifyTableDialogView extends Dialog {
 	 * @return the result
 	 */
 	public Object open() {
-		Util.centralize(shell, getParent());
+		Screen.centralize(shell, getParent());
 		shell.open();
 		shell.layout();
 		Display display = getParent().getDisplay();

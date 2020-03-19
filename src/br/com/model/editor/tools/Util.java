@@ -15,9 +15,6 @@ import java.util.Set;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
@@ -38,28 +35,6 @@ public class Util {
 		FontData[] fd = font.getFontData();
 		fd[0].setStyle(SWT.BOLD);
 		item.setFont(index, new Font(Display.getDefault(),fd));
-	}
-	
-	/**
-	 * Método que posiciona um Shell no centro do parent (se houver)
-	 * @param shell
-	 * @param parent
-	 */
-	public static synchronized void centralize(Shell shell,Composite parent) {
-		if (parent != null){
-			int x = parent.getLocation().x + ((parent.getSize().x- shell.getSize().x)/2);
-			int y = parent.getLocation().y + ((parent.getSize().y- shell.getSize().y)/2);
-			shell.setLocation(new Point(x,y));
-		}else{
-			Rectangle r = shell.getDisplay().getClientArea();
-			int x = (r.width- shell.getSize().x)/2;
-			int y = (r.height- shell.getSize().y)/2;
-			shell.setLocation(new Point(x,y));
-		}
-	}
-
-	public static synchronized void centralize(Shell shell) {
-		centralize(shell, null);
 	}
 
 	public static boolean isUpperCased(String text){
@@ -177,7 +152,7 @@ public class Util {
 		}
 		return false;
 	}
-	
+
 	public static String concat(Set<String> set){
 		StringBuilder builder = new StringBuilder();
 		set.forEach(e->{
@@ -185,14 +160,14 @@ public class Util {
 		});
 		return builder.toString();
 	}
-	
+
 	public static String getExtension(String fileName){
 		String[] s = fileName.split("[.]");
 		if (s.length > 0)
 			return s[s.length-1];
-		return null;	
+		return null;
 	}
-	
+
 	public static boolean isRealNum(String numberStr) {
 		if (numberStr.trim().length() == 0)
 			return false;
@@ -203,19 +178,19 @@ public class Util {
 		}
 		return true;
 	}
-	
+
 	public static void errorMessage(Shell parent, String message) {
 		MessageBox box = new MessageBox(parent, SWT.ICON_ERROR);
 		box.setText("Error");
 		box.setMessage(message);
 		box.open();
 	}
-	
+
 	public static void infoMessage(Shell parent, String message) {
 		MessageBox box = new MessageBox(parent, SWT.ICON_INFORMATION);
 		box.setText("Info");
 		box.setMessage(message);
 		box.open();
 	}
-	
+
 }

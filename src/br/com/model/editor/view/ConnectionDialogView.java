@@ -16,7 +16,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import br.com.model.editor.tools.Util;
+import br.com.model.editor.tools.Screen;
 
 public class ConnectionDialogView extends Dialog {
 
@@ -48,7 +48,7 @@ public class ConnectionDialogView extends Dialog {
 		super(parent, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
 		createContents();
 		setText("Import from database");
-		Util.centralize(shell, getParent());
+		Screen.centralize(shell, getParent());
 	}
 
 	/**
@@ -151,7 +151,7 @@ public class ConnectionDialogView extends Dialog {
 		btnImport.setText("Import");
 		shell.pack();
 	}
-	
+
 	protected void dobtnTestwidgetSelected(SelectionEvent e) {
 	}
 	protected void dobtnImportwidgetSelected(SelectionEvent e) {

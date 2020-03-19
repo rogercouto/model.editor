@@ -9,6 +9,6 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/swt/linux64/org.eclipse.swt.gtk.linux.x86_64_3.107.0.v20180611-0422.jar"/>
+	<classpathentry kind="lib" path="lib/swt/win64/swt.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
