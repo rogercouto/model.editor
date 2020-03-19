@@ -31,12 +31,11 @@ public class Main extends MainShellView {
 	}
 
 	private void initialize() {
-		//dobtnOpenDBwidgetSelected(null);
 	}
 
 	protected void dobtnOpenDBwidgetSelected(SelectionEvent e) {
-		Server server = ConnectionDialog.openDialog(shell);
-		//Server server = new MysqlServer("biblioteca", "root", "");
+		ConnectionDialog dialog = new ConnectionDialog(shell);
+		Server server = (Server)dialog.open();
 		if (server != null) {
 			ReverseEng revEng = new ReverseEng(server);
 			List<Table> tables = revEng.getTables();

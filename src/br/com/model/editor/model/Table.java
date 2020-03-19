@@ -239,6 +239,8 @@ public class Table extends Element implements Cloneable{
 	}
 
 	public void removeColumn(int index){
+		Element e = elements.get(index);
+		niMap.remove(e.getName());
 		elements.remove(index);
 	}
 	

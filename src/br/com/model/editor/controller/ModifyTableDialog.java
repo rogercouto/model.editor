@@ -117,6 +117,11 @@ public class ModifyTableDialog extends ModifyTableDialogView{
 	}
 
 	private void removeItem(int index) {
+		System.out.println("count: "+table.getElementCount()+" index: "+index);
+		if (index >= table.getElementCount()) {
+			System.err.println("WHAT?");
+			return;
+		}
 		table.removeColumn(index);
 		Text text = nameTexts.get(index);
 		nameTexts.remove(index);
@@ -190,7 +195,6 @@ public class ModifyTableDialog extends ModifyTableDialogView{
 
 	private void createColumn(Column c) {
 		//int index = table.getColumns().indexOf(c);
-		int index = tblModifier.getItemCount();
 		TableItem item = new TableItem(tblModifier, SWT.NONE);
 		//item.setText(c.getName());
 		TableEditor editor0 = new TableEditor(tblModifier);
@@ -208,13 +212,14 @@ public class ModifyTableDialog extends ModifyTableDialogView{
 		});
 		combo.setText(c.getType().getSimpleName());
 		disableScroll(combo);
+		typeCombos.add(combo);
 		combo.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
+				int index = typeCombos.indexOf(combo);
 				changeJavaType(index);
 			}
 		});
-		typeCombos.add(combo);
 		editor1.grabHorizontal = true;
 		editor1.setEditor(combo, item, 1);
 		//DbType combo
@@ -225,13 +230,14 @@ public class ModifyTableDialog extends ModifyTableDialogView{
 		});
 		combo2.setText(c.getDbType() != null ? c.getDbType() : "");
 		disableScroll(combo2);
+		dbTypeCombos.add(combo2);
 		combo2.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
+				int index = dbTypeCombos.indexOf(combo2);
 				changeDbType(index);
 			}
 		});
-		dbTypeCombos.add(combo2);
 		editor2.grabHorizontal = true;
 		editor2.setEditor(combo2, item, 2);
 		//DbLen text
@@ -304,13 +310,14 @@ public class ModifyTableDialog extends ModifyTableDialogView{
 		TableEditor editor9 = new TableEditor(tblModifier);
 		Button button = new Button(tblModifier, SWT.NONE);
 		button.setImage(SWTResourceManager.getImage(ModifyTableDialog.class, "/icon/delete.png"));
+		remButtons.add(button);
 		button.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
+				int index = remButtons.indexOf(button);
 				removeItem(index);
 			}
 		});
-		remButtons.add(button);
 		editor9.grabHorizontal = true;
 		editor9.setEditor(button, item, 9);
 	}

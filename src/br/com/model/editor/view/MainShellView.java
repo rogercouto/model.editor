@@ -65,7 +65,7 @@ public class MainShellView {
 	 */
 	protected void createContents() {
 		shell = new Shell();
-		shell.setBackground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_DARK_SHADOW));
+		shell.setBackground(SWTResourceManager.getColor(175, 175, 175));
 		shell.setSize(1280, 600);
 		shell.setText("Model editor");
 		GridLayout gl_shell = new GridLayout(1, false);

@@ -395,6 +395,7 @@ public class ModelEditor extends ModelEditorCompView {
 		selectionIndex = -1;
 		btnEdit.setEnabled(false);
 		btnDelete.setEnabled(false);
+		TableModel.checkFks(models, table);
 		refresh();
 	}
 
@@ -450,7 +451,6 @@ public class ModelEditor extends ModelEditorCompView {
 
 	private void saveStep() {
 		stack.saveStep(models, renames);
-		stack.test();
 		selectionIndex = -1;
 	}
 
@@ -462,7 +462,6 @@ public class ModelEditor extends ModelEditorCompView {
 			server = data.getServer();
 		selectionIndex = -1;
 		refresh();
-		stack.test();
 	}
 
 	protected void dobtnUndowidgetSelected(SelectionEvent e) {

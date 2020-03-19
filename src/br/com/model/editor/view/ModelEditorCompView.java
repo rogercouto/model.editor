@@ -127,7 +127,6 @@ public class ModelEditorCompView extends Composite {
 		setLayout(new FillLayout(SWT.HORIZONTAL));
 		canvas = new Canvas(this, canvasStyle);
 		initialize();
-
 	}
 
 	private void initialize() {
@@ -146,7 +145,7 @@ public class ModelEditorCompView extends Composite {
 				}
 			});
 		}
-		canvas.setBackground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));
+		canvas.setBackground(SWTResourceManager.getColor(227, 227, 227));
 	}
 
 	@Override

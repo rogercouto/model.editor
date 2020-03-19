@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
+import java.util.stream.Collectors;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.GC;
@@ -85,7 +86,7 @@ public class TableModel implements Serializable{
 		if (selected)
 			gc.setBackground(SWTResourceManager.getColor(SWT.COLOR_BLUE));
 		else
-			gc.setBackground(SWTResourceManager.getColor(SWT.COLOR_TITLE_BACKGROUND_GRADIENT));
+			gc.setBackground(SWTResourceManager.getColor(184, 206, 219));
 		gc.fillRectangle(tNameRect);
 		gc.drawRectangle(tNameRect);
 		gc.drawLine(rect.x-hSel, rect.y-vSel+20, rect.width+rect.x-hSel, rect.y-vSel+20);
@@ -126,6 +127,43 @@ public class TableModel implements Serializable{
 				gc.drawLine(fkModel.rect.x-hSel-xdist, fkModel.rect.y-vSel+fkModel.rect.height/2, fkModel.rect.x-hSel, fkModel.rect.y-vSel+fkModel.rect.height/2);
 				gc.drawLine(rect.x-hSel+rect.width+xdist, rect.y-vSel+rect.height/2, fkModel.rect.x-hSel-xdist, fkModel.rect.y-vSel+fkModel.rect.height/2);
 			}
+		});
+	}
+	
+	public static void remakeFks(Table t1, Table t2){
+		List<Column> c1 = t1.getColumns();
+		c1.forEach(c->{
+			if (c.getForeignKey() != null && c.getForeignKey().getTable().getName().compareTo(t2.getName()) == 0){
+				String columnName = c.getForeignKey().getName();
+				Column column = t2.getColumnIFExists(columnName);
+				if (column != null){
+					c.setForeignKey(column);
+				}
+			}
+		});
+	}
+
+	public static void checkFks(List<TableModel> models){
+		models.forEach(m->{
+			List<Table> oList = models
+					.stream()
+					.filter(om->om.getTable().getName().compareTo(m.getTable().getName()) != 0)
+					.map(om->om.getTable())
+					.collect(Collectors.toList());
+			oList.forEach(od->{
+				remakeFks(m.getTable(), od);
+			});
+		});
+	}
+	
+	public static void checkFks(List<TableModel> models, Table table){
+		List<Table> oList = models
+				.stream()
+				.filter(om->om.getTable().getName().compareTo(table.getName()) != 0)
+				.map(om->om.getTable())
+				.collect(Collectors.toList());
+		oList.forEach(od->{
+			remakeFks(od, table);
 		});
 	}
 

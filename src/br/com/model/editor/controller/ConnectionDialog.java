@@ -136,6 +136,7 @@ public class ConnectionDialog extends ConnectionDialogView {
 		}
 	}
 
+	/*
 	public static Server openDialog(Shell parent){
 		String os = System.getProperty("os.name").toLowerCase();
 		if (os.contains("nix") || os.contains("nux") || os.contains("aix")){
@@ -151,5 +152,6 @@ public class ConnectionDialog extends ConnectionDialogView {
 		}
 		return null;
 	}
+	*/
 
 }
