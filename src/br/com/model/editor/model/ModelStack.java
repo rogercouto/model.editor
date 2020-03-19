@@ -13,12 +13,12 @@ import br.com.model.editor.data.Server;
 public class ModelStack {
 
 	public static final int LIMIT = 15;
-	
+
 	private Stack<ModelData> undoStack = new Stack<ModelData>();
 	private Stack<ModelData> redoStack = new Stack<ModelData>();
 	private Server server = null;
-	
-	
+
+
 	public ModelStack(Server server) {
 		super();
 		this.server = server;
@@ -36,16 +36,16 @@ public class ModelStack {
 		if (stack.size() > LIMIT)
 			stack.removeElementAt(0);
 	}
-	
+
 	private void saveStep(ModelData data) {
 		saveStep(data, undoStack);
 		redoStack.clear();
 	}
-	
+
 	public void saveStep(List<TableModel> models, Renames renames) {
 		saveStep(new ModelData(models, renames, server));
 	}
-	
+
 	private void remakeFks(Table t1, Table t2){
 		List<Column> c1 = t1.getColumns();
 		c1.forEach(c->{
@@ -58,7 +58,7 @@ public class ModelStack {
 			}
 		});
 	}
-	
+
 	private void checkFks(List<TableModel> models){
 		models.forEach(m->{
 			List<Table> oList = models
@@ -71,35 +71,35 @@ public class ModelStack {
 			});
 		});
 	}
-	
-	public ModelData undo() {
-		if (undoStack.size() > 1) {
+
+	public ModelData undo(List<TableModel> models, Renames renames) {
+		if (undoStack.size() > 0) {
 			ModelData d = undoStack.pop();
-			saveStep(undoStack.lastElement(), redoStack);
+			saveStep(new ModelData(models, renames, server), redoStack);
 			checkFks(d.getModels());
 			return d;
 		}
 		return null;
 	}
-	
-	public ModelData redo() {
+
+	public ModelData redo(List<TableModel> models, Renames renames) {
 		if (redoStack.size() > 0) {
-			ModelData data = redoStack.pop();
-			saveStep(data, undoStack);
-			checkFks(data.getModels());
-			return data;
+			ModelData d = redoStack.pop();
+			saveStep(new ModelData(models, renames, server), undoStack);
+			checkFks(d.getModels());
+			return d;
 		}
 		return null;
 	}
-	
+
 	public boolean canUndo() {
-		return undoStack.size() > 1;
+		return undoStack.size() > 0;
 	}
-	
+
 	public boolean canRedo() {
 		return redoStack.size() > 0;
 	}
-	
+
 	private static void printTables(List<TableModel> models) {
 		System.out.print("tables:[");
 		models.forEach(m->{
@@ -109,21 +109,21 @@ public class ModelStack {
 		});
 		System.out.println("]");
 	}
-	
+
 	private List<TableModel> models = new LinkedList<>();
-	
+
 	private void createTestTable(String tableName) {
 		Table table = new Table(tableName);
 		models.add(new TableModel(table, new Point(0,0)));
 	}
-	
+
 	public void test() {
 		printTables(models);
 		System.out.println("undoStack.size: "+undoStack.size()+", redoStack.size: "+redoStack.size());
 	}
-	
+
 	public static void main(String[] args) {
-		
+
 		ModelStack stack = new ModelStack(new MysqlServer());
 		stack.saveStep(new LinkedList<>(), new Renames());//initial state
 		stack.createTestTable("T1");
@@ -134,18 +134,25 @@ public class ModelStack {
 		stack.models.remove(1);
 		//stack.saveRedoStep(stack.models, new Renames());
 		stack.test();
-		
+
 		System.out.println("undo");
-		ModelData md = stack.undo();
+		ModelData md = stack.undo(stack.models, new Renames());
 		stack.models = md.getModels();
 		stack.test();
 		//ModelData last = stack.redoStack.lastElement();
 		//printTables(last.getModels());
 		if (stack.canRedo()) {
-			md = stack.redo();
+			System.out.println("redo");
+			md = stack.redo(stack.models, new Renames());
 			stack.models = md.getModels();
+			stack.test();
 		}
+
+		System.out.println("undo");
+		md = stack.undo(stack.models, new Renames());
+		stack.models = md.getModels();
 		stack.test();
+
 		/*
 		stack.models = md.getModels();
 		stack.test();
@@ -154,5 +161,5 @@ public class ModelStack {
 		stack.test();
 		*/
 	}
-	
+
 }

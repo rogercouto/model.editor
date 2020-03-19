@@ -95,50 +95,57 @@ public class PostgresServer extends Server {
 	public String getDatabaseType(Column column) {
 		if (column.isSurrogateKey())
 			return "serial";
-		else if (column.getType().equals(String.class))
-			return "varchar(255)";
-		else if (column.getType().equals(Character.class))
-			return "char(1)";
-		else if (column.getType().equals(Boolean.class))
-			return "bool";
-		else if (column.getType().equals(Integer.class)){
-			if (column.isSurrogateKey())
-				return "serial";
-			return "int";
-		}else if (column.getType().equals(Long.class))
-			return "int8";
-		else if (column.getType().equals(Float.class))
-			return "float4";
-		else if (column.getType().equals(Double.class))
-			return "float8";
-		else if (column.getType().equals(LocalDateTime.class)||column.getType().equals(Date.class))
-			return "datetime";
-		else if (column.getType().equals(LocalDate.class))
-			return "date";
-		else if (column.getType().equals(LocalTime.class))
-			return "time";
-		return "varchar(255)";
+		return getDatabaseType(column.getType());
 	}
 
 	@Override
 	public List<String> getDatabaseTypes() {
 		List<String> types = new ArrayList<String>();
-		//TODO
+		types.add("serial");
+		types.add("varchar");
+		types.add("char");
+		types.add("bool");
+		types.add("integer");
+		types.add("bigint");
+		types.add("real");
+		types.add("double precision");
+		types.add("timestamp");
+		types.add("date");
+		types.add("time");
 		return types;
 	}
 
 	public static void main(String[] args) {
-		PostgresServer server = new PostgresServer("localhost", 5432, "postgres", "admin");
+		PostgresServer server = new PostgresServer("localhost", 5433, "postgres", "admin");
 		server.getDatabaseNames().forEach(System.out::println);
-		Connection connection = server.getConnection();
-
-		System.out.println(connection);
+		server.setDatabaseName("blog");
+		ReverseEng revEng = new ReverseEng(server);
+		revEng.getTables().forEach(System.out::println);
 	}
 
 	@Override
 	public String getDatabaseType(Class<?> javaType) {
-		// TODO Auto-generated method stub
-		return null;
+		if (javaType.equals(String.class))
+			return "varchar";
+		else if (javaType.equals(Character.class))
+			return "char";
+		else if (javaType.equals(Boolean.class))
+			return "bool";
+		else if (javaType.equals(Integer.class)){
+			return "integer";
+		}else if (javaType.equals(Long.class))
+			return "bigint";
+		else if (javaType.equals(Float.class))
+			return "real";
+		else if (javaType.equals(Double.class))
+			return "double precision";
+		else if (javaType.equals(LocalDateTime.class)||javaType.equals(Date.class))
+			return "timestamp";
+		else if (javaType.equals(LocalDate.class))
+			return "date";
+		else if (javaType.equals(LocalTime.class))
+			return "time";
+		return "varchar";
 	}
 
 	@Override

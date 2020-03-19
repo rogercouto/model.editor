@@ -1,17 +1,25 @@
 package br.com.model.editor;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.DirectoryDialog;
+import org.eclipse.swt.widgets.FileDialog;
 
+import br.com.model.editor.controller.ConnectionDialogController;
 import br.com.model.editor.data.MigrateSQL;
 import br.com.model.editor.data.MysqlServer;
+import br.com.model.editor.data.PostgresServer;
 import br.com.model.editor.data.ReverseEng;
 import br.com.model.editor.data.Server;
+import br.com.model.editor.model.ModelData;
 import br.com.model.editor.model.Table;
 import br.com.model.editor.tools.Util;
 import br.com.model.editor.view.MainShellView;
@@ -23,29 +31,24 @@ public class Main extends MainShellView {
 	}
 
 	private void initialize() {
-		dobtnOpenDBwidgetSelected(null);
+		//dobtnOpenDBwidgetSelected(null);
 	}
 
 	protected void dobtnOpenDBwidgetSelected(SelectionEvent e) {
-		//ConnectionDialogController dialog = new ConnectionDialogController(shell);
-		//Server server = (Server)dialog.open();
-		Server server = new MysqlServer("biblioteca", "root", "admin");
+		ConnectionDialogController dialog = new ConnectionDialogController(shell);
+		Server server = (Server)dialog.open();
+		System.out.println(server.getClass());
+		System.out.println(server.getDbName());
+		//Server server = new MysqlServer("biblioteca", "root", "");
 		if (server != null) {
 			ReverseEng revEng = new ReverseEng(server);
 			List<Table> tables = revEng.getTables();
 			modelEditor.setServer(server);
 			modelEditor.addTablesAndInit(tables);
-			/*
-			modelEditor.clear();
-			tables.forEach(t->{
-				modelEditor.addTable(t);
-			});
-			
-			modelEditor.calcPositions();
-			*/
 			modelEditor.setVisible(true);
 			modelEditor.refresh();
 			btnExport.setEnabled(true);
+			btnSave.setEnabled(true);
 		}
 	}
 
@@ -57,14 +60,23 @@ public class Main extends MainShellView {
 	protected void doBtnNewMysqlWidgetSelected(SelectionEvent e){
 		Server server = new MysqlServer();
 		modelEditor.setServer(server);
-		modelEditor.clear();
-		
-		modelEditor.calcPositions();
+		modelEditor.initEmpty();
 		modelEditor.setVisible(true);
 		modelEditor.refresh();
 		btnExport.setEnabled(true);
+		btnSave.setEnabled(true);
 	}
-	
+
+	protected void doBtnNewPostgreSQLWidgetSelected(SelectionEvent e){
+		Server server = new PostgresServer();
+		modelEditor.setServer(server);
+		modelEditor.initEmpty();
+		modelEditor.setVisible(true);
+		modelEditor.refresh();
+		btnExport.setEnabled(true);
+		btnSave.setEnabled(true);
+	}
+
 	protected void dotltmTestwidgetSelected(SelectionEvent e) {
 		if (modelEditor.getServer() == null) {
 			Util.errorMessage(shell, "Server not set!");
@@ -88,5 +100,47 @@ public class Main extends MainShellView {
 			Util.errorMessage(shell, "Unknown IO Error!");
 		}
 	}
-	
+
+	protected void dotltmSavewidgetSelected(SelectionEvent e) {
+		ModelData data = modelEditor.getModelData();
+		FileDialog dialog = new FileDialog(shell, SWT.SAVE);
+		dialog.setFilterExtensions(new String[]{".mef"});
+		String fileName = dialog.open();
+		if (fileName != null){
+			try {
+				File file = new File(fileName);
+				ObjectOutputStream stream = new ObjectOutputStream(new FileOutputStream(file));
+				stream.writeObject(data);
+				stream.close();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		}
+	}
+
+	protected void dotltmOpenwidgetSelected(SelectionEvent e) {
+		FileDialog dialog = new FileDialog(shell, SWT.OPEN);
+		dialog.setFilterExtensions(new String[]{".mef"});
+		String fileName = dialog.open();
+		if (fileName != null){
+			File file = new File(fileName);
+			if (file.exists()){
+				try {
+					ObjectInputStream stream = new ObjectInputStream(new FileInputStream(file));
+					ModelData data = (ModelData)stream.readObject();
+					stream.close();
+					modelEditor.setServer(data.getServer());
+					modelEditor.addModelsAndInit(data.getModels());
+					modelEditor.setRenames(data.getRenames());
+					modelEditor.setVisible(true);
+					modelEditor.refresh();
+					btnExport.setEnabled(true);
+					btnSave.setEnabled(true);
+				} catch (IOException | ClassNotFoundException e1) {
+					e1.printStackTrace();
+				}
+			}
+		}
+	}
+
 }

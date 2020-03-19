@@ -26,6 +26,8 @@ public class MainShellView {
 	protected ModelEditorController modelEditor;
 	protected ToolItem btnNewDatabase;
 	protected ToolItem btnExport;
+	protected ToolItem btnSave;
+	protected ToolItem btnOpen;
 
 	public MainShellView() {
 		createContents();
@@ -91,7 +93,26 @@ public class MainShellView {
 			}
 		});
 		btnOpenDB.setImage(SWTResourceManager.getImage(MainShellView.class, "/icon/database32.png"));
-		btnOpenDB.setText("Connect");
+		btnOpenDB.setText("Import");
+		btnOpen = new ToolItem(toolBar, SWT.NONE);
+		btnOpen.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				dotltmOpenwidgetSelected(e);
+			}
+		});
+		btnOpen.setImage(SWTResourceManager.getImage(MainShellView.class, "/icon/open32.png"));
+		btnOpen.setText("Open");
+		btnSave = new ToolItem(toolBar, SWT.NONE);
+		btnSave.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				dotltmSavewidgetSelected(e);
+			}
+		});
+		btnSave.setEnabled(false);
+		btnSave.setImage(SWTResourceManager.getImage(MainShellView.class, "/icon/save32.png"));
+		btnSave.setText("Save");
 		btnExport = new ToolItem(toolBar, SWT.NONE);
 		btnExport.setEnabled(false);
 		btnExport.addSelectionListener(new SelectionAdapter() {
@@ -109,7 +130,6 @@ public class MainShellView {
 	}
 
 	protected void dobtnOpenDBwidgetSelected(SelectionEvent e) {
-
 	}
 
 	private void dobtnNewDatabasewidgetSelected(SelectionEvent e) {
@@ -124,10 +144,17 @@ public class MainShellView {
         item1.setText("Mysql");
         MenuItem item2 = new MenuItem(menu, SWT.PUSH);
         item2.setText("PostgreSQL");
-        item2.setEnabled(false);
+        item2.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				doBtnNewPostgreSQLWidgetSelected(arg0);
+			}
+		});
+        /*
         MenuItem item3 = new MenuItem(menu, SWT.PUSH);
         item3.setText("Sqlite");
         item3.setEnabled(false);
+        */
         Point loc = toolBar.getLocation();
         Rectangle rect = toolBar.getBounds();
         Point mLoc = new Point(loc.x-1, loc.y+rect.height);
@@ -137,7 +164,12 @@ public class MainShellView {
 
 	protected void doBtnNewMysqlWidgetSelected(SelectionEvent e){
 	}
-
+	protected void doBtnNewPostgreSQLWidgetSelected(SelectionEvent e){
+	}
 	protected void dotltmTestwidgetSelected(SelectionEvent e) {
+	}
+	protected void dotltmSavewidgetSelected(SelectionEvent e) {
+	}
+	protected void dotltmOpenwidgetSelected(SelectionEvent e) {
 	}
 }

@@ -1,9 +1,12 @@
 package br.com.model.editor.model;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Renames {
+public class Renames implements Serializable{
+
+	private static final long serialVersionUID = 1L;
 
 	private Map<String, String> tableMap = new HashMap<>();
 	private Map<String, String> columnMap = new HashMap<>();
@@ -19,18 +22,18 @@ public class Renames {
 		}
 		tableMap.put(newName, originalValue);
 	}
-	
+
 	public String getTableName(String newName) {
 		if (tableMap.containsKey(newName))
 			return tableMap.get(newName);
 		return newName;
 	}
-	
+
 	private String getKey(String tableName, String columnName) {
 		String originalTableName = getTableName(tableName);
 		return String.format("%s#%s", originalTableName, columnName);
 	}
-	
+
 	public void renameColumn(String oldName, String newName, String tableName) {
 		if (showChanges)
 			System.err.println(getTableName(tableName)+"#"+oldName+" -> "+getTableName(tableName)+"#"+newName);
@@ -41,13 +44,13 @@ public class Renames {
 		}
 		columnMap.put(getKey(tableName, newName), originalValue);
 	}
-	
+
 	public String getColumnName(String newName, String tableName) {
 		if (columnMap.containsKey(getKey(tableName, newName)))
 			return columnMap.get(getKey(tableName, newName));
 		return newName;
 	}
-	
+
 	public void putAll(Renames another) {
 		if (another != null) {
 			this.showChanges = false;
@@ -67,7 +70,7 @@ public class Renames {
 			this.showChanges = true;
 		}
 	}
-	
+
 	public boolean isShowChanges() {
 		return showChanges;
 	}
@@ -81,29 +84,29 @@ public class Renames {
 		renames.setShowChanges(true);
 		renames.renameTable("assunto", "assunto2");
 		renames.renameTable("assunto2", "assuntos");
-		
+
 		System.out.println(renames.getTableName("assuntos"));
-		
+
 		System.out.println();
-		
+
 		renames.renameColumn("assunto_id", "key","assuntos");
 		renames.renameColumn("key", "id","assuntos");
-		
+
 		System.out.println(renames.getColumnName("key", "assuntos"));
 		System.out.println(renames.getColumnName("id", "assuntos"));
 		System.out.println(renames.getColumnName("editora_id", "editora"));
 		System.out.println(renames.getColumnName("assunto_id", "livro"));
 		System.out.println(renames.getColumnName("id", "assuntos"));
-		
+
 		Renames r2 = new Renames();
 		r2.renameTable("editora", "editoras");
 		r2.putAll(renames);
-		
+
 		System.out.println();
-		
+
 		System.out.println(r2.getTableName("editoras")); //expect editora
 		System.out.println(renames.getColumnName("id", "assuntos")); //expect assunto_id
-		
+
 	}
-	
+
 }

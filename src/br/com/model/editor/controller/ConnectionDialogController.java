@@ -1,6 +1,7 @@
 package br.com.model.editor.controller;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
@@ -27,13 +28,13 @@ public class ConnectionDialogController extends ConnectionDialogView {
 	private void initialize(){
 		cmbDriver.add("Mysql");
 		cmbDriver.add("PostgreSQL");
-		cmbDriver.add("Sqlite");
+		//cmbDriver.add("Sqlite");
 		txtPort.setEnabled(false);
 		txtUser.setEnabled(false);
 		txtPassword.setEnabled(false);
 		cmbDatabase.setEnabled(false);
 	}
-	
+
 	protected void docmbDriverwidgetSelected(SelectionEvent e) {
 		switch (cmbDriver.getSelectionIndex()) {
 		case 0:
@@ -79,6 +80,7 @@ public class ConnectionDialogController extends ConnectionDialogView {
 			if (conn != null){
 				this.server = server;
 				databaseNames = this.server.getDatabaseNames();
+				cmbDatabase.removeAll();
 				databaseNames.forEach(name->{
 					cmbDatabase.add(name);
 				});
@@ -110,13 +112,15 @@ public class ConnectionDialogController extends ConnectionDialogView {
 	}
 
 	protected void dobtnImportwidgetSelected(SelectionEvent e) {
+		String dbName = cmbDatabase.getText();
 		try{
-			if (cmbDatabase.getText().trim().length() > 0){
+			if (dbName.trim().length() > 0){
 				dobtnTestwidgetSelected(e);
-				server.setDatabaseName(cmbDatabase.getText());
+				server.setDatabaseName(dbName);
 				Connection conn = server.getConnection();
 				if (conn != null){
 					result = server;
+					conn.close();
 					shell.close();
 				}
 			}else if (cmbDriver.getSelectionIndex() == 2){
@@ -127,7 +131,7 @@ public class ConnectionDialogController extends ConnectionDialogView {
 					shell.close();
 				}
 			}
-		} catch (java.lang.RuntimeException ex) {
+		} catch (java.lang.RuntimeException | SQLException ex) {
 			lblTest.setText("Cannot connect with database!");
 		}
 	}

@@ -25,7 +25,7 @@ public class MigrateSQL {
 	public Server server;
 	public List<Table> list;
 	private Renames renames;
-	
+
 	public MigrateSQL(String dbName, Server server, List<Table> list, Renames renames) {
 		super();
 		this.dbName = dbName;
@@ -34,9 +34,9 @@ public class MigrateSQL {
 		this.renames = renames;
 		if (this.renames == null)
 			this.renames = new Renames();
-		
+
 	}
-	
+
 	public String getTableCreateSql(Table table) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("CREATE TABLE ");
@@ -84,7 +84,7 @@ public class MigrateSQL {
 		builder.append(";\n\n");
 		return builder.toString();
 	}
-	
+
 	public String getAllTablesCreateSql(){
 		StringBuilder builder = new StringBuilder();
 		list.forEach(table->{
@@ -92,14 +92,14 @@ public class MigrateSQL {
 		});
 		return builder.toString();
 	}
-	
+
 	public List<String> getTablesCreateSqls(){
 		return list
 				.stream()
 				.map(t->getTableCreateSql(t))
 				.collect(Collectors.toList());
 	}
-	
+
 	public String getFKCreateSql(Table table) {
 		StringBuilder builder = new StringBuilder();
 		List <Column> fks = table.getForeignKeys();
@@ -117,7 +117,7 @@ public class MigrateSQL {
 		});
 		return builder.toString();
 	}
-	
+
 	public String getAllFksCreateSql(){
 		StringBuilder builder = new StringBuilder();
 		list.forEach(table->{
@@ -125,18 +125,18 @@ public class MigrateSQL {
 		});
 		return builder.toString();
 	}
-	
+
 	public List<String> getFksCreateSqls(){
 		return list
 				.stream()
 				.map(t->getFKCreateSql(t))
 				.collect(Collectors.toList());
 	}
-	
+
 	public DataList getData(Table table){
 		try {
 			DataList list = new DataList(table);
-			String sql = String.format("SELECT * FROM %s", renames.getTableName(table.getName()));		
+			String sql = String.format("SELECT * FROM %s", renames.getTableName(table.getName()));
 			Connection conn = server.getConnection();
 			Statement stmt = conn.createStatement();
 			ResultSet res = stmt.executeQuery(sql);
@@ -157,7 +157,7 @@ public class MigrateSQL {
 		}
 		return null;
 	}
-	
+
 	public Map<String, DataList> getDataMap(List<Table> tables) {
 		Map<String, DataList> map = new LinkedHashMap<>();
 		tables.forEach(t->{
@@ -165,7 +165,7 @@ public class MigrateSQL {
 		});
 		return map;
 	}
-	
+
 	public List<Table> getDependences(Table table){
 		Set<Table> refs = new HashSet<>();
 		refs.add(table);
@@ -178,7 +178,7 @@ public class MigrateSQL {
 		});
 		return refs.stream().collect(Collectors.toList());
 	}
-	
+
 	public String migrateData(Table table) {
 		List<Table> refs = getDependences(table);
 		Map<String, DataList> map = getDataMap(refs);
@@ -224,14 +224,14 @@ public class MigrateSQL {
 		builder.append(";");
 		return builder.toString();
 	}
-	
+
 	public void saveFile(String path, String content) throws IOException {
 		File file = new File(path);
 		FileWriter writer = new FileWriter(file);
 		writer.write(content);
 		writer.close();
 	}
-	
+
 	public void createFiles(File directory) throws IOException {
 		int i = 0;
 		if (directory.isDirectory()) {
@@ -239,9 +239,11 @@ public class MigrateSQL {
 				String path = String.format("%s\\V%d_Create_Table_%s.sql",directory.getPath(),++i, t.getClassName());
 				String sql = getTableCreateSql(t);
 				saveFile(path, sql);
-				path = String.format("%s\\V%d_Insert_Data_Into_%s.sql",directory.getPath(),++i, t.getClassName());
-				sql = migrateData(t);
-				saveFile(path, sql);
+				if (t.isMigrateData()){
+					path = String.format("%s\\V%d_Insert_Data_Into_%s.sql",directory.getPath(),++i, t.getClassName());
+					sql = migrateData(t);
+					saveFile(path, sql);
+				}
 			}
 			String path = String.format("%s\\V%d_Create_Foreign_Keys.sql",directory.getPath(),++i);
 			String sql = getAllFksCreateSql();

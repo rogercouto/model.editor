@@ -1,11 +1,14 @@
 package br.com.model.editor.data;
 
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.math.BigDecimal;
 
 /**
  * Enumeracao utilizada pra mapear os tipos de dados do banco de dados para classes do java v.v
@@ -87,7 +90,8 @@ public enum DataTypes {
 	 * @param javaClass classe
 	 * @return String
 	 */
-	public static String getDbType(Class<?> javaClass){
+	@Deprecated
+	public static String getDbTypeOld(Class<?> javaClass){
 		for (DataTypes dt : DataTypes.values()) {
 			if (dt.getClass().equals(javaClass))
 				return dt.getDbType();
@@ -131,9 +135,26 @@ public enum DataTypes {
 				||javaClass.equals(Float.TYPE)||javaClass.equals(Float.class)||javaClass.equals(Double.TYPE)||javaClass.equals(Double.class)
 				||javaClass.equals(BigDecimal.class)) {
 			return object.toString();
+		}else if (javaClass.equals(LocalDate.class)){
+			object = ((LocalDate)object).toString();
+		}else if (javaClass.equals(LocalDateTime.class)){
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+			object = ((LocalDateTime)object).format(dtf);
+		}else if (javaClass.equals(LocalTime.class)){
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
+			object = ((LocalTime)object).format(dtf);
+		}else if (javaClass.equals(Date.class)){
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+			object = sdf.format((Date)object);
 		}
-		//TODO correct with dates
 		return String.format("'%s'", object.toString());
 	}
-	
+
+	public static void main(String[] args) {
+		System.out.println(toDb(LocalDate.of(2020, 03, 18), LocalDate.class));
+		System.out.println(toDb(LocalDateTime.of(2020, 03, 18, 16, 21, 33, 123000000), LocalDateTime.class));
+		System.out.println(toDb(LocalTime.of(16, 21, 33, 321000000), LocalTime.class));
+		System.out.println(toDb(new Date(), Date.class));
+	}
+
 }

@@ -52,7 +52,7 @@ public class ModifyTableDialogController extends ModifyTableDialogView{
 	private List<String> dbTypes = null;
 	//private List<Column> newColumns = new ArrayList<>();
 	private Renames renames = null;
-	
+
 	public ModifyTableDialogController(Shell parent, Server server, Table table, List<Table> allTables) {
 		super(parent);
 		result = false;
@@ -157,7 +157,9 @@ public class ModifyTableDialogController extends ModifyTableDialogView{
 		int i = typeCombos.get(index).getSelectionIndex();
 		if (index >= 0){
 			Class<?> type = TYPES.get(i);
-			String dbType = server.getDatabaseType(type);
+			String dbType = aiChecks.get(index).getSelection() ?
+				server.getDatabaseSurrogateKeyType() :
+				server.getDatabaseType(type);
 			int j = dbTypes.indexOf(dbType);
 			if (j >= 0){
 				dbTypeCombos.get(index).select(j);
@@ -371,17 +373,18 @@ public class ModifyTableDialogController extends ModifyTableDialogView{
 		if (table.getColumns().size() > 0){
 			c.setName("column_"+table.getColumns().size());
 			c.setType(String.class);
-			c.setDbType("VARCHAR");
+			c.setDbType(server.getDatabaseType(String.class));
 			c.setSize(255);
 		}else{
 			c.setName("id");
 			c.setType(Integer.class);
-			c.setDbType("INT");
+			c.setDbType(server.getDatabaseSurrogateKeyType());
 			c.setPrimaryKey(true);
 			c.setNotNull(true);
 			c.setSurrogateKey(true);
 			c.setUnique(true);
 		}
+		c.setMigrateValue(false);
 		table.addColumn(c);
 		createColumn(c);
 		Text text = nameTexts.get(nameTexts.size()-1);

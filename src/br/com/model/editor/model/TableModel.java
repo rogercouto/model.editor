@@ -1,5 +1,6 @@
 package br.com.model.editor.model;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -10,7 +11,9 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.wb.swt.SWTResourceManager;
 
-public class TableModel {
+public class TableModel implements Serializable{
+
+	private static final long serialVersionUID = 1L;
 
 	private Table table;
 	private Rectangle rect;

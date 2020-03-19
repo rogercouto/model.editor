@@ -127,7 +127,7 @@ public class MysqlServer extends Server {
 
 	@Override
 	public String getDatabaseSurrogateKeyType() {
-		return "INT AUTO_INCREMENT";
+		return "INT";
 	}
 
 }

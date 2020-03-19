@@ -53,8 +53,8 @@ public class ModelEditorController extends ModelEditorCompView {
 
 	private ModelStack stack;
 	//private Stack<List<TableModel>> undoStack = new Stack<>();
-	
-	
+
+
 	public ModelEditorController(Composite parent, int style) {
 		super(parent, style);
 		initialize();
@@ -190,19 +190,25 @@ public class ModelEditorController extends ModelEditorCompView {
 		calcPositions();
 		renames = new Renames();
 		stack = new ModelStack(server);
-		stack.saveStep(models, renames);
 		refresh();
 	}
-	
-	public void initEmpty() {
+
+	public void addModelsAndInit(List<TableModel> tm) {
 		clear();
+		models.addAll(tm);
 		calcPositions();
 		renames = new Renames();
 		stack = new ModelStack(server);
-		stack.saveStep(models, renames);
 		refresh();
 	}
-	
+
+	public void initEmpty() {
+		clear();
+		renames = new Renames();
+		stack = new ModelStack(server);
+		refresh();
+	}
+
 	public void addTable(Table table){
 		TableModel tm = new TableModel(table, new Point(START_POS, START_POS));
 		models.add(tm);
@@ -211,7 +217,7 @@ public class ModelEditorController extends ModelEditorCompView {
 	public void addTableModel(TableModel tableModel){
 		models.add(tableModel);
 	}
-	
+
 	public int getTableIndex(String tableName){
 		for (int i = 0; i < models.size(); i++) {
 			if (models.get(i).getTable().getName().compareTo(tableName) == 0)
@@ -219,7 +225,7 @@ public class ModelEditorController extends ModelEditorCompView {
 		}
 		return -1;
 	}
-	
+
 	public void setTable(int index, Table table){
 		String name = models.get(index).getTable().getName();
 		getTables()
@@ -246,7 +252,7 @@ public class ModelEditorController extends ModelEditorCompView {
 		removeTable(index);
 		refresh();
 	}
-	
+
 	private void removeTable(int index) {
 		if (index >= 0) {
 			saveStep();
@@ -264,7 +270,7 @@ public class ModelEditorController extends ModelEditorCompView {
 				model.calculeSize();
 				model.setPosition(model.getPosition());
 				canvas.redraw();
-				
+
 			});
 			models.remove(index);
 		}
@@ -441,13 +447,13 @@ public class ModelEditorController extends ModelEditorCompView {
 		getShell().setMaximized(max);
 		btnUndo.setEnabled(stack.canUndo());
 	}
-	
+
 	private void saveStep() {
 		stack.saveStep(models, renames);
 		stack.test();
 		selectionIndex = -1;
 	}
-	
+
 	private void setNewData(ModelData data, boolean setServer) {
 		clear();
 		data.getModels().forEach(m->addTableModel(m));
@@ -458,22 +464,22 @@ public class ModelEditorController extends ModelEditorCompView {
 		refresh();
 		stack.test();
 	}
-	
+
 	protected void dobtnUndowidgetSelected(SelectionEvent e) {
 		if (stack.canUndo()) {
-			setNewData(stack.undo(), false);
+			setNewData(stack.undo(models, renames), false);
 			btnRedo.setEnabled(stack.canRedo());
 		}
 	}
-	
+
 	protected void dobtnRedowidgetSelected(SelectionEvent e) {
 		if (stack.canRedo()) {
-			setNewData(stack.redo(), false);
+			setNewData(stack.redo(models, renames), false);
 			btnUndo.setEnabled(stack.canUndo());
 			btnRedo.setEnabled(stack.canRedo());
 		}
 	}
-		
+
 	protected void docanvaskeyPressed(KeyEvent e) {
 		if (e.keyCode == SWT.DEL) {
 			removeTable(selectionIndex);
@@ -491,13 +497,21 @@ public class ModelEditorController extends ModelEditorCompView {
 			}
         }
 	}
-	
+
 	public int getSelectionIndex() {
 		return selectionIndex;
+	}
+
+	public void setRenames(Renames renames){
+		this.renames = renames;
 	}
 
 	public Renames getRenames() {
 		return renames;
 	}
-	
+
+	public ModelData getModelData(){
+		return new ModelData(models, renames, server);
+	}
+
 }

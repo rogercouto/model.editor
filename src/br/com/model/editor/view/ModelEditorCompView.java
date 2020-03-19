@@ -99,8 +99,10 @@ public class ModelEditorCompView extends Composite {
 		lblDb = new Label(this, SWT.NONE);
 		lblDb.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		lblDb.setText("DB:");
+		lblDb.setVisible(false);
 		txtDbName = new Text(this, SWT.BORDER);
 		txtDbName.setText("new_database");
+		txtDbName.setVisible(false);
 		GridData gd_txtDbName = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
 		gd_txtDbName.widthHint = 200;
 		txtDbName.setLayoutData(gd_txtDbName);
